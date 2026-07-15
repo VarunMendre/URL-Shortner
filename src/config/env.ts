@@ -1,1 +1,26 @@
 // Environment config placeholder.
+
+import { z } from "zod";
+
+const envSchema = z.object({
+  PORT: z.coerce.number().default(3000),
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
+  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  REDIS_URL: z.string().min(1, "REDIS_URL is required"),
+  JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
+  APP_BASE_URL: z.string().url("APP_BASE_URL must be valid URL"),
+});
+
+const parsedEnv = envSchema.safeParse(process.env);
+
+if (!parsedEnv.success) {
+  console.error(
+    "Invalid environment variables",
+    parsedEnv.error.flatten().fieldErrors,
+  );
+  throw new Error("Invalid environment variables");
+}
+
+export const env = parsedEnv.data;
