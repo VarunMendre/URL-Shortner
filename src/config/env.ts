@@ -1,5 +1,3 @@
-// Environment config placeholder.
-
 import { z } from "zod";
 
 const envSchema = z.object({
@@ -8,9 +6,12 @@ const envSchema = z.object({
     .enum(["development", "test", "production"])
     .default("development"),
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
-  REDIS_URL: z.string().min(1, "REDIS_URL is required"),
   JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
-  APP_BASE_URL: z.string().url("APP_BASE_URL must be valid URL"),
+  APP_BASE_URL: z.string().url("APP_BASE_URL must be a valid URL"),
+  REDIS_HOST: z.string().min(1, "REDIS_HOST is required"),
+  REDIS_PORT: z.coerce.number().int().positive("REDIS_PORT must be a positive integer"),
+  REDIS_USERNAME: z.string().optional(),
+  REDIS_PASSWORD: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
