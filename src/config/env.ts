@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { z } from "zod";
 
 const envSchema = z.object({
@@ -9,7 +10,10 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
   APP_BASE_URL: z.string().url("APP_BASE_URL must be a valid URL"),
   REDIS_HOST: z.string().min(1, "REDIS_HOST is required"),
-  REDIS_PORT: z.coerce.number().int().positive("REDIS_PORT must be a positive integer"),
+  REDIS_PORT: z.coerce
+    .number()
+    .int()
+    .positive("REDIS_PORT must be a positive integer"),
   REDIS_USERNAME: z.string().optional(),
   REDIS_PASSWORD: z.string().optional(),
 });

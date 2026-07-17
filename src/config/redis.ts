@@ -7,7 +7,7 @@ export const redisClient = createClient({
   socket: {
     host: env.REDIS_HOST,
     port: env.REDIS_PORT,
-    keepAlive: 10_000,
+    keepAlive: true,
     connectTimeout: 10000,
     reconnectStrategy: (retries) => {
       if (retries > 10) {
@@ -20,10 +20,11 @@ export const redisClient = createClient({
   },
 });
 
-
 redisClient.on("connect", () => console.log("Redis client connecting..."));
 redisClient.on("ready", () => console.log("Redis client ready"));
-redisClient.on("reconnecting", () => console.log("Redis client is reconnecting..."));
+redisClient.on("reconnecting", () =>
+  console.log("Redis client is reconnecting..."),
+);
 redisClient.on("error", (err) => {
   if (err.message.includes("Connection timeout")) {
     console.warn("Redis connection timeout... retrying");
@@ -32,17 +33,22 @@ redisClient.on("error", (err) => {
   }
 });
 
-
 let connectingPromise: Promise<void> | null = null;
 
 export const connectRedis = async () => {
   if (redisClient.isOpen) return;
   if (connectingPromise) return connectingPromise;
 
+  if (!env.REDIS_HOST) {
+    console.warn("REDIS_HOST is missing. Redis features will be disables.");
+
+    return;
+  }
+
   connectingPromise = (async () => {
     try {
       await redisClient.connect();
-      console.log("Redis connected.");
+      console.log("Redis connected");
     } catch (err) {
       console.error("Redis connection failed:", err);
     } finally {

@@ -2,7 +2,7 @@
 
 import cors from "cors";
 import express from "express";
-import pinoHttp from "pino-http";
+import { pinoHttp } from "pino-http";
 import helmet from "helmet";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import { healthRouter } from "./modules/health/health.routes.js";

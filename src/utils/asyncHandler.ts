@@ -1,3 +1,4 @@
+// Async handler helper placeholder.
 import type { NextFunction, Request, RequestHandler, Response } from "express";
 
 type AsyncRouteHandler = (
@@ -6,7 +7,7 @@ type AsyncRouteHandler = (
   next: NextFunction,
 ) => Promise<unknown>;
 
-export const asyncHandler = (fn: AsyncRouteHandler): RequestHandler => {
+export const asynHandler = (fn: AsyncRouteHandler): RequestHandler => {
   return (req, res, next) => {
     void fn(req, res, next).catch(next);
   };
